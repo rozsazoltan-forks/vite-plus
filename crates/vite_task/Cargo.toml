@@ -29,5 +29,13 @@ serde = { workspace = true, features = ["derive", "rc"] }
 serde_json = { workspace = true }
 shell-escape = { workspace = true }
 twox-hash = { workspace = true }
-vite_workspace = { workspace = true }
+vite_package_manager = { workspace = true }
 wax = { workspace = true }
+fspy = { workspace = true }
+futures-core = { workspace = true }
+futures-util = { workspace = true }
+tokio = { workspace = true, features = ["rt-multi-thread", "io-std", "macros"] }
+brush-parser = "0.2.18"
+
+[target.'cfg(unix)'.dependencies]
+nix = { version = "0.30.1", features = ["dir"] }
