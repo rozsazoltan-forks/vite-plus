@@ -79,9 +79,6 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - uses: oxc-project/setup-node@4c31090ef1282f7c654edf77357894fc80ef5236 # v1.0.2
-        with:
-          registry-url: "https://npm.pkg.github.com/"
-          scope: "@voidzero-dev"
 
       - name: Bootstrap
         run: pnpm bootstrap-cli:ci
@@ -112,11 +109,19 @@ jobs:
           sed -i 's/"version": "0.0.0"/"version": "0.0.0-${{ github.sha }}"/' packages/global/package.json
           sed -i 's/"version": "0.0.0"/"version": "0.0.0-${{ github.sha }}"/' packages/cli/package.json
 
+      # Setup node correctly for publishing to github registry
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@voidzero-dev"
+          package-manager-cache: false
+
+      - run: npm install -g npm@latest # For trusted publishing support
+
       - name: Publish
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ${NPM_CONFIG_USERCONFIG}
-          echo "@voidzero-dev:registry=https://npm.pkg.github.com/" >> ${NPM_CONFIG_USERCONFIG}
           pnpm publish --filter=./packages/global --registry https://npm.pkg.github.com --no-git-checks
           pnpm publish --filter=./packages/cli --registry https://npm.pkg.github.com --no-git-checks
         env:
-          NPM_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
