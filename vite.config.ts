@@ -5,11 +5,13 @@ export default (<UserConfig>{
     rules: {
       'no-console': 'warn',
     },
+    excludePatterns: ['**/snap-tests/**', '**/snap-tests-todo/**'],
   },
   test: {
     exclude: [
       '**/node_modules/**',
       '**/snap-tests/**',
+      './ecosystem-ci/**',
       './rolldown/**',
       './rolldown-vite/**',
       // FIXME: Error: failed to prepare the command for injection: Invalid argument (os error 22)
